@@ -1,16 +1,198 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
 
+// Obtener proyectos destacados
+const projects = await getCollection('projects');
+const featuredProjects = projects.filter(project => project.data.featured).slice(0, 3);
+
+const baseUrl = import.meta.env.BASE_URL;
+// Helper function to create correct URLs
+const createUrl = (path: string) => {
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  return `${baseUrl}${cleanPath}`;
+};
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="José Ángel Salinas - Desarrollador Full Stack">
+  <Header />
+  
+  <main class="min-h-screen">
+    <!-- Hero Section -->
+    <section class="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <!-- Text Content -->
+          <div class="space-y-8">
+            <div class="space-y-4">
+              <h1 class="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
+                Hola, soy
+                <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  José Ángel
+                </span>
+              </h1>
+              <p class="text-xl md:text-2xl text-gray-600 dark:text-gray-300">
+                Desarrollador Full Stack especializado en crear aplicaciones web modernas y escalables
+              </p>
+            </div>
+            
+            <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+              Transformo ideas en experiencias digitales excepcionales usando las últimas tecnologías. 
+              Especializado en React, Node.js, y arquitecturas cloud que impulsan el crecimiento empresarial.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4">
+              <a 
+                href={createUrl('proyectos/')}
+                class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 text-center"
+              >
+                Ver Proyectos
+              </a>
+              <a 
+                href={createUrl('contacto/')}
+                class="border-2 border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-600 hover:text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 text-center"
+              >
+                Contactar
+              </a>
+            </div>
+            
+            <!-- Tech Stack -->
+            <div class="space-y-4">
+              <p class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+                Tecnologías principales
+              </p>
+              <div class="flex flex-wrap gap-3">
+                {['React', 'Node.js', 'TypeScript', 'PostgreSQL', 'AWS', 'Docker'].map(tech => (
+                  <span class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full text-sm font-medium">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+          
+          <!-- Image/Animation Area -->
+          <div class="flex justify-center lg:justify-end">
+            <div class="relative">
+              <div class="w-80 h-80 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full flex items-center justify-center">
+                <div class="w-72 h-72 bg-white dark:bg-gray-900 rounded-full flex items-center justify-center">
+                  <svg class="w-32 h-32 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7V10C2 16 6 20.5 12 22C18 20.5 22 16 22 10V7L12 2M11 7H13V9H11V7M11 11H13V17H11V11Z"/>
+                  </svg>
+                </div>
+              </div>
+              <!-- Floating elements -->
+              <div class="absolute -top-4 -right-4 w-16 h-16 bg-yellow-400 rounded-lg rotate-12 animate-bounce"></div>
+              <div class="absolute -bottom-4 -left-4 w-12 h-12 bg-green-400 rounded-full animate-pulse"></div>
+              <div class="absolute top-1/2 -left-8 w-8 h-8 bg-pink-400 rounded-full animate-ping"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Projects Section -->
+    <section class="py-16 bg-gray-50 dark:bg-gray-800">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Proyectos Destacados
+          </h2>
+          <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Una selección de mis trabajos más recientes y significativos
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuredProjects.map(project => (
+            <div class="bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
+              <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7V10C2 16 6 20.5 12 22C18 20.5 22 16 22 10V7L12 2M11 7H13V9H11V7M11 11H13V17H11V11Z"/>
+                </svg>
+              </div>
+              <div class="p-6">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  {project.data.title}
+                </h3>
+                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                  {project.data.description}
+                </p>
+                <div class="flex flex-wrap gap-2 mb-4">
+                  {project.data.technologies.slice(0, 3).map(tech => (
+                    <span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded text-xs font-medium">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+                <div class="flex gap-3">
+                  {project.data.github && (
+                    <a 
+                      href={project.data.github} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    >
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                      </svg>
+                    </a>
+                  )}
+                  {project.data.demo && (
+                    <a 
+                      href={project.data.demo} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div class="text-center mt-12">
+          <a 
+            href={createUrl('proyectos/')}
+            class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300"
+          >
+            Ver todos los proyectos
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16">
+      <div class="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          ¿Tienes un proyecto en mente?
+        </h2>
+        <p class="text-lg text-gray-600 dark:text-gray-300 mb-8">
+          Hablemos sobre cómo puedo ayudarte a convertir tu idea en realidad
+        </p>
+        <a 
+          href={createUrl('contacto/')}
+          class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105"
+        >
+          Empezar conversación
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+          </svg>
+        </a>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+</Layout>

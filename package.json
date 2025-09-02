@@ -1,14 +1,34 @@
 {
   "name": "portfolio",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "description": "Portfolio personal de José Ángel Salinas - Desarrollador Full Stack",
+  "author": "José Ángel Salinas <jose@example.com>",
+  "license": "MIT",
+  "homepage": "https://joseangelsalinas.github.io/Portfolio",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joseangelsalinas/Portfolio.git"
+  },
+  "keywords": [
+    "portfolio",
+    "astro",
+    "typescript",
+    "tailwindcss",
+    "full-stack",
+    "developer"
+  ],
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "start": "astro dev",
+    "check": "astro check"
   },
   "dependencies": {
-    "astro": "^5.13.5"
+    "@tailwindcss/vite": "^4.1.12",
+    "astro": "^5.13.5",
+    "tailwindcss": "^4.1.12"
   }
 }

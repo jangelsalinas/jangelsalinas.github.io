@@ -1,0 +1,231 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const projects = await getCollection('projects');
+const sortedProjects = projects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+// Obtener todas las tecnologías únicas para el filtro
+const allTechnologies = [...new Set(projects.flatMap(project => project.data.technologies))];
+---
+
+<Layout title="Proyectos - José Ángel Salinas">
+  <Header />
+  
+  <main class="min-h-screen pt-24 pb-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header Section -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+          Mis Proyectos
+        </h1>
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          Una colección de proyectos que demuestran mis habilidades en desarrollo web, 
+          desde aplicaciones simples hasta sistemas complejos y escalables.
+        </p>
+      </div>
+
+      <!-- Filter Section -->
+      <div class="mb-8">
+        <div class="flex flex-wrap gap-2 justify-center">
+          <button 
+            class="filter-btn active bg-blue-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300"
+            data-filter="all"
+          >
+            Todos
+          </button>
+          {allTechnologies.slice(0, 8).map(tech => (
+            <button 
+              class="filter-btn bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-blue-100 dark:hover:bg-blue-900 px-4 py-2 rounded-lg font-medium transition-all duration-300"
+              data-filter={tech.toLowerCase()}
+            >
+              {tech}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Projects Grid -->
+      <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {sortedProjects.map(project => (
+          <article 
+            class="project-card bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
+            data-technologies={project.data.technologies.map(tech => tech.toLowerCase()).join(',')}
+          >
+            <!-- Project Image/Icon -->
+            <div class="h-48 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center relative overflow-hidden">
+              {project.data.image ? (
+                <img 
+                  src={project.data.image} 
+                  alt={project.data.title}
+                  class="w-full h-full object-cover"
+                />
+              ) : (
+                <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7V10C2 16 6 20.5 12 22C18 20.5 22 16 22 10V7L12 2M11 7H13V9H11V7M11 11H13V17H11V11Z"/>
+                </svg>
+              )}
+              
+              <!-- Status Badge -->
+              <div class="absolute top-4 right-4">
+                <span class={`px-2 py-1 rounded-full text-xs font-medium ${
+                  project.data.status === 'completed' 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                    : project.data.status === 'in-progress'
+                    ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                    : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+                }`}>
+                  {project.data.status === 'completed' 
+                    ? 'Completado' 
+                    : project.data.status === 'in-progress' 
+                    ? 'En progreso' 
+                    : 'Planeado'
+                  }
+                </span>
+              </div>
+            </div>
+
+            <!-- Project Content -->
+            <div class="p-6">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                  {project.data.title}
+                </h3>
+                {project.data.featured && (
+                  <span class="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 px-2 py-1 rounded text-xs font-medium">
+                    Destacado
+                  </span>
+                )}
+              </div>
+              
+              <p class="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
+                {project.data.description}
+              </p>
+              
+              <!-- Technologies -->
+              <div class="flex flex-wrap gap-2 mb-4">
+                {project.data.technologies.slice(0, 4).map(tech => (
+                  <span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded text-xs font-medium">
+                    {tech}
+                  </span>
+                ))}
+                {project.data.technologies.length > 4 && (
+                  <span class="text-gray-500 dark:text-gray-400 text-xs">
+                    +{project.data.technologies.length - 4} más
+                  </span>
+                )}
+              </div>
+              
+              <!-- Links -->
+              <div class="flex items-center justify-between">
+                <div class="flex gap-3">
+                  {project.data.github && (
+                    <a 
+                      href={project.data.github} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      aria-label="Ver código en GitHub"
+                    >
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                      </svg>
+                    </a>
+                  )}
+                  {project.data.demo && (
+                    <a 
+                      href={project.data.demo} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      aria-label="Ver demo en vivo"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                      </svg>
+                    </a>
+                  )}
+                </div>
+                
+                <span class="text-sm text-gray-500 dark:text-gray-400">
+                  {project.data.date.toLocaleDateString('es-ES', { 
+                    year: 'numeric', 
+                    month: 'short' 
+                  })}
+                </span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- Empty State -->
+      <div id="no-projects" class="hidden text-center py-12">
+        <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.513.642-6.394 1.764C4.234 17.34 3 18.536 3 20a.5.5 0 00.5.5h17a.5.5 0 00.5-.5c0-1.464-1.234-2.66-2.606-3.236A7.962 7.962 0 0112 15z"/>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">
+          No se encontraron proyectos
+        </h3>
+        <p class="text-gray-600 dark:text-gray-300">
+          Intenta con otro filtro o categoría
+        </p>
+      </div>
+    </div>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<script>
+  // Filter functionality
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const projectCards = document.querySelectorAll('.project-card');
+  const noProjectsMessage = document.getElementById('no-projects');
+
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // Update active button
+      filterButtons.forEach(btn => {
+        btn.classList.remove('active', 'bg-blue-600', 'text-white');
+        btn.classList.add('bg-gray-100', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
+      });
+      
+      button.classList.add('active', 'bg-blue-600', 'text-white');
+      button.classList.remove('bg-gray-100', 'dark:bg-gray-800', 'text-gray-700', 'dark:text-gray-300');
+
+      // Filter projects
+      const filter = button.getAttribute('data-filter');
+      let visibleCount = 0;
+
+      projectCards.forEach(card => {
+        const technologies = card.getAttribute('data-technologies')?.toLowerCase() || '';
+        
+        if (filter === 'all' || technologies.includes(filter.toLowerCase())) {
+          card.style.display = 'block';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Show/hide empty state
+      if (visibleCount === 0) {
+        noProjectsMessage?.classList.remove('hidden');
+      } else {
+        noProjectsMessage?.classList.add('hidden');
+      }
+    });
+  });
+</script>
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
