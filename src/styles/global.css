@@ -1,2 +1,1 @@
-@import "tailwindcss";
-@import "./theme.css";
+/* Astro Tailwind integration will handle Tailwind CSS imports */
