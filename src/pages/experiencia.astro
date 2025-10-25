@@ -6,6 +6,14 @@ import { getCollection } from 'astro:content';
 
 const experiences = await getCollection('experience');
 const sortedExperiences = experiences.sort((a, b) => b.data.startDate.getTime() - a.data.startDate.getTime());
+
+// Renderizar el contenido Markdown de cada experiencia
+const experiencesWithContent = await Promise.all(
+  sortedExperiences.map(async (exp) => {
+    const { Content } = await exp.render();
+    return { ...exp, Content };
+  })
+);
 ---
 
 <Layout title="Experiencia - José Ángel Salinas">
@@ -30,7 +38,7 @@ const sortedExperiences = experiences.sort((a, b) => b.data.startDate.getTime() 
         <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-300 dark:bg-gray-600"></div>
         
         <div class="space-y-12">
-          {sortedExperiences.map((experience, index) => (
+          {experiencesWithContent.map((experience, index) => (
             <div class="relative flex items-start">
               <!-- Timeline Dot -->
               <div class="absolute left-6 w-4 h-4 bg-blue-600 rounded-full border-4 border-white dark:border-gray-900 shadow-lg"></div>
@@ -77,8 +85,15 @@ const sortedExperiences = experiences.sort((a, b) => b.data.startDate.getTime() 
                 </div>
 
                 <!-- Experience Description -->
-                <div class="prose dark:prose-invert max-w-none mb-6">
-                  <div set:html={experience.body} class="text-gray-600 dark:text-gray-300" />
+                <div class="mb-6">
+                  <div class="prose prose-slate dark:prose-invert max-w-none
+                              prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4 prose-h2:text-gray-900 dark:prose-h2:text-white
+                              prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-6 prose-h3:mb-3 prose-h3:text-gray-800 dark:prose-h3:text-gray-100
+                              prose-p:text-gray-600 dark:prose-p:text-gray-300 prose-p:leading-relaxed prose-p:mb-4
+                              prose-ul:my-4 prose-li:text-gray-600 dark:prose-li:text-gray-300 prose-li:my-1
+                              prose-strong:text-gray-900 dark:prose-strong:text-white prose-strong:font-semibold">
+                    <experience.Content />
+                  </div>
                 </div>
 
                 <!-- Technologies -->
@@ -139,7 +154,7 @@ const sortedExperiences = experiences.sort((a, b) => b.data.startDate.getTime() 
             </div>
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Frontend</h3>
             <div class="flex flex-wrap justify-center gap-2">
-              {['React', 'Vue.js', 'TypeScript', 'Tailwind', 'Astro'].map(skill => (
+              {['React', 'Vue.js', 'JavaScript', 'Tailwind', 'Astro'].map(skill => (
                 <span class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded text-sm">
                   {skill}
                 </span>
@@ -156,7 +171,7 @@ const sortedExperiences = experiences.sort((a, b) => b.data.startDate.getTime() 
             </div>
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Backend</h3>
             <div class="flex flex-wrap justify-center gap-2">
-              {['Node.js', 'Express', 'PostgreSQL', 'MongoDB', 'JWT'].map(skill => (
+              {['Spring Boot', 'J2EE','Node.js', 'Express', 'Sistemas distribuidos - Kafka', 'Oracle', 'MongoDB', 'PL/SQL', 'Maven'].map(skill => (
                 <span class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded text-sm">
                   {skill}
                 </span>
